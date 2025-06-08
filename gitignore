@@ -1,0 +1,9 @@
+# dbt ignores
+target/
+dbt_modules/
+logs/
+
+# OS / IDE
+.DS_Store
+__pycache__/
+.venv/

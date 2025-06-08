@@ -1,0 +1,96 @@
+view: semantic_layer {
+  sql_table_name: challenge-astrafy.Astrafy.Sales ;;  # base table
+
+  # Primary Key
+  dimension: order_id {
+    primary_key: yes
+    type: string
+    sql: ${TABLE}.order_id ;;  
+  }
+
+  # Foreign Key
+  dimension: orders_id {
+    type: string
+    sql: ${TABLE}.orders_id ;;  
+  }
+
+  dimension: customers_id {
+    type: string
+    sql: ${TABLE}.customers_id ;;  
+  }
+
+  dimension: products_id {
+    type: string
+    sql: ${TABLE}.products_id ;;  
+  }
+
+  dimension: date_date {
+    type: date
+    sql: ${TABLE}.date_date ;;  
+  }
+
+  dimension: month {
+    type: string
+    sql: FORMAT_DATE('%Y-%m', DATE(${TABLE}.date_date)) ;;  
+    group_label: "Time"
+    label: "Month"
+  }
+
+  dimension: order_segmentation {
+    type: string
+    sql: ${TABLE}.order_segmentation ;;  # assuming this is joined or present already
+  }
+
+  # Dynamic segmentation if not in table
+  dimension: dynamic_order_segmentation {
+    type: string
+    sql:
+      CASE
+        WHEN (
+          SELECT COUNT(*)
+          FROM `challenge-astrafy.Astrafy.Orders` o
+          WHERE o.customers_id = ${TABLE}.customers_id
+          AND o.date_date BETWEEN DATE_SUB(${TABLE}.date_date, INTERVAL 12 MONTH) AND DATE_SUB(${TABLE}.date_date, INTERVAL 1 DAY)
+        ) = 0 THEN 'New'
+        WHEN (
+          SELECT COUNT(*)
+          FROM `challenge-astrafy.Astrafy.Orders` o
+          WHERE o.customers_id = ${TABLE}.customers_id
+          AND o.date_date BETWEEN DATE_SUB(${TABLE}.date_date, INTERVAL 12 MONTH) AND DATE_SUB(${TABLE}.date_date, INTERVAL 1 DAY)
+        ) BETWEEN 1 AND 3 THEN 'Returning'
+        ELSE 'VIP'
+      END ;;
+    label: "Order Segmentation (Dynamic)"
+    group_label: "Segmentation"
+  }
+
+  measure: total_net_sales {
+    type: sum
+    sql: ${TABLE}.net_sales ;;  
+    value_format_name: "usd"
+  }
+
+  measure: total_quantity {
+    type: sum
+    sql: ${TABLE}.quantity ;;  
+  }
+
+  measure: distinct_orders {
+    type: count_distinct
+    sql: ${TABLE}.order_id ;;  
+  }
+
+  measure: avg_products_per_order {
+    type: number
+    sql: ${total_quantity} / NULLIF(${distinct_orders}, 0) ;;  
+    value_format_name: "decimal_1"
+  }
+}
+
+explore: semantic_layer {
+  join: Orders {
+    type: left_outer
+    sql_on: ${semantic_layer.order_id} = ${Orders.orders_id} ;;
+    relationship: many_to_one
+  }
+} 

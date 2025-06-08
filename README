@@ -1,0 +1,50 @@
+Astrafy Data Challenge – dbt + SQL
+This repository contains my solution to the Astrafy BI Engineer challenge using dbt and BigQuery.
+
+📁 Repository Structure
+ASTRAFY-CHALLENGE/
+├── models/
+│ ├── staging/ # dbt staging models
+│ │ ├── stg_orders.sql
+│ │ ├── stg_sales.sql
+│ │ └── source.yml
+│ ├── marts/ # dbt intermediate logic
+│ │ └── int_segmented_orders.sql
+│ │ └── int_fill_rate_by_order.sql	
+│ └── schema.yml # Tests & documentation
+│
+├── sql/ # Raw SQL notebook with analytics questions
+│ └── exercices_challenge.sql
+│
+├── dbt_project.yml # dbt project config
+├── .gitignore
+└── README.md
+bash
+Copy
+Edit
+
+🚀 Setup & Run
+Ensure you have Python + dbt installed, and a working BigQuery profile (profiles.yml).
+
+Install dbt
+pip install dbt-bigquery
+
+Run dbt
+dbt deps
+dbt run
+dbt test
+📊 Business Questions (SQL)
+The file sql/exercices_sql contains answers to:
+Total orders in 2023
+Orders per month in 2023
+Avg number of products per order (monthly)
+Orders with qty of products in 2022–2023
+Client segmentation (New, Returning, VIP)
+Segmentation column per order
+Each query is commented in SQL for BigQuery
+Software:
+dbt-core
+BigQuery
+Git + GitLab
+Looker Studio link below 
+https://lookerstudio.google.com/reporting/22194c92-6f61-49b2-95e8-aedabf0e2ca6
