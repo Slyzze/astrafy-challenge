@@ -1,5 +1,5 @@
 Astrafy Data Challenge – dbt + SQL
-This repository contains my solution to the Astrafy BI Engineer challenge using dbt and BigQuery.
+This repository is a project example using dbt and BigQuery to publish a Looker dashboard.
 
 📁 Repository Structure
 ASTRAFY-CHALLENGE/
